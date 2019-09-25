@@ -19,8 +19,8 @@ class ViewController: UIViewController {
     
     var formulaArray = ["Miles to Kilometers",
                         "Kilometers to Miles",
-                        "Yards to Meters",
                         "Meters to feet",
+                        "Yards to Meters",
                         "Meters to Yards"]
     
     override func viewDidLoad() {
