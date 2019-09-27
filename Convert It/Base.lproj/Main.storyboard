@@ -78,6 +78,9 @@
                                     <segment title="-"/>
                                 </segments>
                                 <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="signSegmentSelected:" destination="BYZ-38-t0r" eventType="valueChanged" id="mCP-g6-W4R"/>
+                                </connections>
                             </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="iEd-qL-tuP">
                                 <rect key="frame" x="43.333333333333343" y="442" width="288.33333333333326" height="28"/>
@@ -115,6 +118,9 @@
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                                <connections>
+                                    <action selector="userInputChanged:" destination="BYZ-38-t0r" eventType="editingChanged" id="7AL-PF-m9q"/>
+                                </connections>
                             </textField>
                         </subviews>
                         <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -147,6 +153,7 @@
                         <outlet property="formulaPickerView" destination="WPQ-Wc-Dga" id="1lz-I3-kz7"/>
                         <outlet property="fromUnitsLabel" destination="f3H-oJ-VwC" id="ZyJ-0W-ur4"/>
                         <outlet property="resultsLabel" destination="hOq-pa-6b5" id="l5S-US-JsV"/>
+                        <outlet property="signSegment" destination="uVI-tM-rO4" id="owv-tX-6hc"/>
                         <outlet property="userInput" destination="7O0-bd-2z0" id="248-4R-GpQ"/>
                     </connections>
                 </viewController>
