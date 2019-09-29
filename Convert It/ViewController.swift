@@ -10,6 +10,11 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    struct Formula {
+        var conversionString: String
+        var formula: (Double) -> Double
+    }
+    
     @IBOutlet weak var userInput: UITextField!
     @IBOutlet weak var fromUnitsLabel: UILabel!
     @IBOutlet weak var resultsLabel: UILabel!
@@ -17,31 +22,34 @@ class ViewController: UIViewController {
     @IBOutlet weak var decimalSegment: UISegmentedControl!
     @IBOutlet weak var signSegment: UISegmentedControl!
     
-    
-    
-    var formulaArray = ["Miles to Kilometers",
-                        "Kilometers to Miles",
-                        "Meters to Feet",
-                        "Feet to Meters",
-                        "Yards to Meters",
-                        "Meters to Yards",
-                        "Inches to CM",
-                        "CM to Inches",
-                        "Fahrenheit to Celcius",
-                        "Celcius to Fahrenheit",
-                        "Quarts to Liters",
-                        "Liters to Quarts"]
+    let formulasArray = [Formula(conversionString: "Miles to Kilometers", formula: {$0 / 0.62137}),
+                         Formula(conversionString: "Kilometers to Miles", formula: {$0 * 0.62137}),
+                         Formula(conversionString: "Feet to Meters", formula: {$0 / 3.2808}),
+                         Formula(conversionString: "Meters to Feet", formula: {$0 * 3.2808}),
+                         Formula(conversionString: "Yards to Meters", formula: {$0 / 1.0936}),
+                         Formula(conversionString: "Meters to Yards", formula: {$0 * 1.0936}),
+                         Formula(conversionString: "Inches to CM", formula: {$0 / 0.3937}),
+                         Formula(conversionString: "CM to Inches", formula: {$0 * 0.3937}),
+                         Formula(conversionString: "Fahrenheit to Celcius", formula: {($0 - 32) * (5/9)}),
+                         Formula(conversionString: "Celcius to Fahrenheit", formula: {($0 * (9/5)) + 32}),
+                         Formula(conversionString: "Quarts to Liters", formula: {$0 / 1.05669}),
+                         Formula(conversionString: "Liters to Quarts", formula: {$0 * 1.05669})]
     
     var fromUnits = ""
     var toUnits = ""
     var conversionString = ""
+    
     
     // MARK:- Class Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         formulaPickerView.delegate = self
         formulaPickerView.dataSource = self
-        conversionString = formulaArray[formulaPickerView.selectedRow(inComponent: 0)]
+        conversionString = formulasArray[formulaPickerView.selectedRow(inComponent: 0)].conversionString
+        let unitsArray = conversionString.components(separatedBy: " to ")
+        fromUnits = unitsArray[0]
+        fromUnitsLabel.text = fromUnits
+        toUnits = unitsArray[1]
         userInput.becomeFirstResponder()
         signSegment.isHidden = true
     }
@@ -52,39 +60,9 @@ class ViewController: UIViewController {
             if userInput.text != "" {
                 showAlert(title: "Cannot Convert Value", message: "\"\(userInput.text!)\" is not a valid number.")
             }
-
             return
         }
-        var outputValue = 0.0
-        switch conversionString {
-        case "Miles to Kilometers":
-            outputValue = inputValue / 0.62137
-        case "Kilometers to Miles":
-            outputValue = inputValue * 0.62137
-        case "Feet to Meters":
-            outputValue = inputValue / 3.2808
-        case "Meters to Feet":
-            outputValue = inputValue * 3.2808
-        case "Yards to Meters":
-            outputValue = inputValue / 1.0936
-        case "Meters to Yards":
-            outputValue = inputValue * 0.62137
-        case "Inches to CM":
-            outputValue = inputValue / 0.3937
-        case "CM to Inches":
-            outputValue = inputValue * 0.3937
-        case "Fahrenheit to Celcius":
-            outputValue = (inputValue - 32) * (5/9)
-        case "Celcius to Fahrenheit":
-            outputValue = (inputValue * (9/5)) + 32
-        case "Quarts to Liters":
-            outputValue = inputValue / 1.05669
-        case "Liters to Quarts":
-            outputValue = inputValue * 1.05669
-        default:
-            print("show alert for some reason we didnt have a conversion string")
-            showAlert(title: "Unexpected Error", message: "Contact the developer and share that \"\(conversionString)\" could not be identified.")
-            }
+        let outputValue = formulasArray[formulaPickerView.selectedRow(inComponent: 0)].formula(inputValue)
 
         let formatString = (decimalSegment.selectedSegmentIndex < decimalSegment.numberOfSegments-1 ? "%.\(decimalSegment.selectedSegmentIndex+1)f" : "%f")
         let outputString = String(format: formatString, outputValue)
@@ -140,16 +118,16 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-         return formulaArray.count
+         return formulasArray.count
     }
     
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return formulaArray[row]
+        return formulasArray[row].conversionString
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        conversionString = formulaArray[row]
+        conversionString = formulasArray[row].conversionString
         
         if conversionString.uppercased().contains("celcius".uppercased()) {
             signSegment.isHidden = false
@@ -160,7 +138,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         }
             
             
-        let unitsArray = formulaArray[row].components(separatedBy: " to ")
+        let unitsArray = formulasArray[row].conversionString.components(separatedBy: " to ")
         fromUnits = unitsArray[0]
         toUnits = unitsArray[1]
         fromUnitsLabel.text = fromUnits
